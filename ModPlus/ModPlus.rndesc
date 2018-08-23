@@ -1,0 +1,10 @@
+﻿<RengaPlugin>
+  <Name>ModPlus</Name>
+  <Version>1.0</Version>
+  <RequiredAPIVersion>2.1</RequiredAPIVersion>
+  <Vendor>Пекшев Александр aka Modis</Vendor>
+  <Copyright>modplus.org</Copyright>
+  <PluginFilename>D:\ModPlus\Extensions\ModPlus_Renga.dll</PluginFilename>
+  <PluginType>Net</PluginType>
+</RengaPlugin>
+
