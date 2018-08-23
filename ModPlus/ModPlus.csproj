@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\ModPlus\Extensions\</OutputPath>
+    <OutputPath>..\..\..\..\..\ModPlus\Extensions\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,17 +26,17 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\ModPlus\Extensions\</OutputPath>
+    <OutputPath>..\..\..\..\..\ModPlus\Extensions\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\..\..\ModPlus\Extensions\ModPlus_Renga.xml</DocumentationFile>
+    <DocumentationFile>..\..\..\..\..\ModPlus\Extensions\ModPlus_Renga.xml</DocumentationFile>
     <CodeAnalysisRuleSet>ModPlus.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ModPlusAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\ModPlus\Extensions\ModPlusAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\ModPlus\Extensions\ModPlusAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Renga.NET.PluginUtility">
@@ -48,8 +48,6 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enumerators\FunctionForProduct.cs" />
-    <Compile Include="Enumerators\FunctionUILocation.cs" />
     <Compile Include="IRengaFunction.cs" />
     <Compile Include="ModPlus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
