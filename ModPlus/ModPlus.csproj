@@ -39,6 +39,8 @@
       <HintPath>..\..\..\..\..\ModPlus\Extensions\ModPlusAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="Renga.NET.PluginUtility">
       <HintPath>C:\_RengaSDK\Net\Renga.NET.PluginUtility.dll</HintPath>
       <Private>True</Private>
@@ -46,8 +48,14 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\LoadedFunction.cs" />
+    <Compile Include="Helpers\LoadFunctionsHelper.cs" />
+    <Compile Include="Helpers\MenuBuilder.cs" />
     <Compile Include="IRengaFunction.cs" />
     <Compile Include="ModPlus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +79,13 @@
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ModPlus_24x24.png" />
+    <Resource Include="Resources\Settings_24x24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Settings_16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

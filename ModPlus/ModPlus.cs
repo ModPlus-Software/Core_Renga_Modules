@@ -6,23 +6,24 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using Helpers;
     using Microsoft.Win32;
     using ModPlusAPI;
     using Renga;
 
     public class ModPlus : IPlugin
     {
-        public Application RengApplication { get; private set; }
+        public Application RengaApplication { get; private set; }
 
         public List<ActionEventSource> ActionEventSources { get; private set; }
 
         public bool Initialize(string pluginFolder)
         {
-            RengApplication = new Renga.Application();
+            RengaApplication = new Renga.Application();
             ActionEventSources = new List<ActionEventSource>();
             try
             {
-                // inint lang
+                // init lang
                 if (!Language.Initialize())
                     return false;
 
@@ -30,11 +31,11 @@
                 ////Statistic.SendPluginStarting("Renga", MpVersionData.CurRevitVers);
 
                 // Принудительная загрузка сборок
-                LoadAssms();
+                LoadAssemblies();
                 UserConfigFile.InitConfigFile();
                 LoadFunctions();
 
-                TestLoadCommand();
+                MenuBuilder.Build(RengaApplication, ActionEventSources);
 
                 // проверка загруженности модуля автообновления
                 CheckAutoUpdaterLoaded();
@@ -43,7 +44,7 @@
             }
             catch (Exception exception)
             {
-                RengApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
+                RengaApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
                 return false;
             }
         }
@@ -58,7 +59,7 @@
 
         private void TestLoadCommand()
         {
-            var uiPanelExtension = RengApplication.UI.CreateUIPanelExtension();
+            var uiPanelExtension = RengaApplication.UI.CreateUIPanelExtension();
             string file = @"D:\ModPlus\Functions\Renga\RengaTestFunction\RengaTestFunction.dll";
             var assembly = Assembly.LoadFrom(file);
 
@@ -67,7 +68,7 @@
                 var c = t.GetInterface(typeof(IRengaFunction).Name);
                 if (c != null && Activator.CreateInstance(t) is IRengaFunction function)
                 {
-                    var action = RengApplication.UI.CreateAction();
+                    var action = RengaApplication.UI.CreateAction();
                     action.ToolTip = "Test";
                     ActionEventSource actionEventSource = new ActionEventSource(action);
                     ActionEventSources.Add(actionEventSource);
@@ -76,13 +77,13 @@
                 }
             }
 
-            RengApplication.UI.AddExtensionToPrimaryPanel(uiPanelExtension);
+            RengaApplication.UI.AddExtensionToPrimaryPanel(uiPanelExtension);
         }
 
         /// <summary>
         /// Принудительная загрузка сборок необходимых для работы
         /// </summary>
-        private void LoadAssms()
+        private void LoadAssemblies()
         {
             try
             {
@@ -97,7 +98,7 @@
             }
             catch (Exception exception)
             {
-                RengApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
+                RengaApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
             }
         }
 
@@ -106,53 +107,43 @@
         {
             try
             {
-                var funtionsKey = Registry.CurrentUser.OpenSubKey("ModPlus\\Functions");
-                if (funtionsKey == null)
+                var functionsKey = Registry.CurrentUser.OpenSubKey("ModPlus\\Functions");
+                if (functionsKey == null)
                     return;
-                using (funtionsKey)
+                using (functionsKey)
                 {
-                    foreach (var functionKeyName in funtionsKey.GetSubKeyNames())
+                    foreach (var functionKeyName in functionsKey.GetSubKeyNames())
                     {
-                        var functionKey = funtionsKey.OpenSubKey(functionKeyName);
+                        var functionKey = functionsKey.OpenSubKey(functionKeyName);
                         if (functionKey == null)
                             continue;
-                        foreach (var availPrVersKeyName in functionKey.GetSubKeyNames())
+                        var prForValue = functionKey.GetValue("ProductFor");
+                        if (prForValue != null && prForValue.Equals("Renga"))
                         {
-                            // Если версия продукта не совпадает, то пропускаю
-                            ////if (!availPrVersKeyName.Equals(MpVersionData.CurRevitVers))
-                            ////    continue;
-                            var availPrVersKey = functionKey.OpenSubKey(availPrVersKeyName);
-                            if (availPrVersKey == null)
-                                continue;
-
                             // беру свойства функции из реестра
-                            var file = availPrVersKey.GetValue("File") as string;
-                            var onOff = availPrVersKey.GetValue("OnOff") as string;
-                            var productFor = availPrVersKey.GetValue("ProductFor") as string;
-                            if (string.IsNullOrEmpty(onOff) || string.IsNullOrEmpty(productFor))
-                                continue;
-                            if (!productFor.Equals("Renga"))
+                            var file = functionKey.GetValue("File") as string;
+                            var onOff = functionKey.GetValue("OnOff") as string;
+                            if (string.IsNullOrEmpty(onOff))
                                 continue;
                             var isOn = !bool.TryParse(onOff, out var b) || b; // default - true
-
                             // Если "Продукт для" подходит, файл существует и функция включена - гружу
                             if (isOn)
                             {
-                                ////if (!string.IsNullOrEmpty(file) && File.Exists(file))
-                                ////{
-                                ////    // load
-                                ////    var localFuncAssembly = Assembly.LoadFrom(file);
-                                ////    LoadFunctionsHelper.GetDataFromFunctionIntrface(localFuncAssembly, file);
-                                ////}
-                                ////else
-                                ////{
-                                ////    var findedFile = LoadFunctionsHelper.FindFile(functionKeyName);
-                                ////    if (!string.IsNullOrEmpty(findedFile) && File.Exists(findedFile))
-                                ////    {
-                                ////        var localFuncAssembly = Assembly.LoadFrom(findedFile);
-                                ////        LoadFunctionsHelper.GetDataFromFunctionIntrface(localFuncAssembly, findedFile);
-                                ////    }
-                                ////}
+                                if (!string.IsNullOrEmpty(file) && File.Exists(file))
+                                {
+                                    // load
+                                    var localFuncAssembly = Assembly.LoadFrom(file);
+                                    LoadFunctionsHelper.GetDataFromFunctionInterface(localFuncAssembly, file);
+                                }
+                                else
+                                {
+                                    var foundedFile = LoadFunctionsHelper.FindFile(functionKeyName);
+                                    if (!string.IsNullOrEmpty(foundedFile) && File.Exists(foundedFile))
+                                    {
+                                        var localFuncAssembly = Assembly.LoadFrom(foundedFile);
+                                        LoadFunctionsHelper.GetDataFromFunctionInterface(localFuncAssembly, foundedFile);
+                                    }
+                                }
                             }
                         }
                     }
@@ -160,7 +151,7 @@
             }
             catch (Exception exception)
             {
-                RengApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
+                RengaApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
             }
         }
 
