@@ -1,4 +1,6 @@
-﻿namespace ModPlus
+﻿using ModPlusAPI.Windows;
+
+namespace ModPlus
 {
     using System;
     using System.Collections.Generic;
@@ -55,29 +57,6 @@
             {
                 actionEventSource.Dispose();
             }
-        }
-
-        private void TestLoadCommand()
-        {
-            var uiPanelExtension = RengaApplication.UI.CreateUIPanelExtension();
-            string file = @"D:\ModPlus\Functions\Renga\RengaTestFunction\RengaTestFunction.dll";
-            var assembly = Assembly.LoadFrom(file);
-
-            foreach (var t in assembly.GetTypes())
-            {
-                var c = t.GetInterface(typeof(IRengaFunction).Name);
-                if (c != null && Activator.CreateInstance(t) is IRengaFunction function)
-                {
-                    var action = RengaApplication.UI.CreateAction();
-                    action.ToolTip = "Test";
-                    ActionEventSource actionEventSource = new ActionEventSource(action);
-                    ActionEventSources.Add(actionEventSource);
-                    actionEventSource.Triggered += (sender, args) => function.Start();
-                    uiPanelExtension.AddToolButton(action);
-                }
-            }
-
-            RengaApplication.UI.AddExtensionToPrimaryPanel(uiPanelExtension);
         }
 
         /// <summary>

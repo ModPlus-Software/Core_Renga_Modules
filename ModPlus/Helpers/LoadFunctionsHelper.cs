@@ -2,27 +2,31 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using ModPlusAPI.Interfaces;
 
-    public static class LoadFunctionsHelper
+    internal static class LoadFunctionsHelper
     {
         static LoadFunctionsHelper()
         {
             if (LoadedFunctions == null)
                 LoadedFunctions = new List<LoadedFunction>();
+            CurrentRengaType = GetCurrentRengaType();
         }
 
-        public static List<LoadedFunction> LoadedFunctions { get; set; }
+        internal static CurrentRengaType CurrentRengaType { get; }
+
+        internal static List<LoadedFunction> LoadedFunctions { get; set; }
 
         /// <summary>
         /// Поиск файла функции, если в файле конфигурации вдруг нет атрибута
         /// </summary>
         /// <param name="functionName">Function name</param>
         /// <returns>Path to file or empty string</returns>
-        public static string FindFile(string functionName)
+        internal static string FindFile(string functionName)
         {
             var fileName = string.Empty;
             var regKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("ModPlus");
@@ -49,7 +53,7 @@
             return fileName;
         }
 
-        public static void GetDataFromFunctionInterface(Assembly loadedFuncAssembly, string fileName)
+        internal static void GetDataFromFunctionInterface(Assembly loadedFuncAssembly, string fileName)
         {
             var types = GetLoadableTypes(loadedFuncAssembly);
             foreach (var type in types)
@@ -59,31 +63,25 @@
                 {
                     if (Activator.CreateInstance(type) is IModPlusFunctionForRenga function)
                     {
-                        var lf = new LoadedFunction
+                        if (IsFunctionAllowableForCurrentRengaType(function))
                         {
-                            Name = function.Name,
-                            LName = function.LName,
-                            ActionButtonViewType = function.ActionButtonViewType,
-                            RengaProduct = function.RengaProduct,
-                            UiLocation = function.UiLocation,
-                            IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
-                            Description = function.Description,
-                            SmallIconUrl = "pack://application:,,,/" + loadedFuncAssembly.GetName().FullName +
-                                           ";component/Resources/" + function.Name +
-                                           "_16x16.png",
-                            MiddleIconUrl = "pack://application:,,,/" + loadedFuncAssembly.GetName().FullName +
-                                           ";component/Resources/" + function.Name +
-                                           "_24x24.png",
-                            BigIconUrl = "pack://application:,,,/" + loadedFuncAssembly.GetName().FullName +
-                                         ";component/Resources/" + function.Name +
-                                         "_32x32.png",
-                            FullDescription = function.FullDescription,
-                            ToolTipHelpImage = !string.IsNullOrEmpty(function.ToolTipHelpImage)
-                            ? "pack://application:,,,/" + loadedFuncAssembly.GetName().FullName + ";component/Resources/Help/" + function.ToolTipHelpImage
-                            : string.Empty
-                        };
+                            var lf = new LoadedFunction
+                            {
+                                Name = function.Name,
+                                LName = function.LName,
+                                ActionButtonViewType = function.ActionButtonViewType,
+                                RengaProduct = function.RengaProduct,
+                                UiLocation = function.UiLocation,
+                                ContextMenuShowCase = function.ContextMenuShowCase,
+                                ViewType = function.ViewType,
+                                IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
+                                Description = function.Description,
+                                FullDescription = function.FullDescription,
+                                FunctionAssembly = loadedFuncAssembly
+                            };
 
-                        LoadedFunctions.Add(lf);
+                            LoadedFunctions.Add(lf);
+                        }
                     }
 
                     break;
@@ -103,6 +101,32 @@
             {
                 return e.Types.Where(t => t != null);
             }
+        }
+
+        private static CurrentRengaType GetCurrentRengaType()
+        {
+            var t = Process.GetCurrentProcess().MainWindowTitle;
+            if (t.ToLower().Contains("architecture"))
+                return CurrentRengaType.Architecture;
+            if (t.ToLower().Contains("structure"))
+                return CurrentRengaType.Structure;
+            return CurrentRengaType.MEP;
+        }
+
+        private static bool IsFunctionAllowableForCurrentRengaType(IModPlusFunctionForRenga function)
+        {
+            if (function.RengaProduct == RengaProduct.Any)
+                return true;
+            if (function.RengaProduct == RengaProduct.Architecture &&
+                CurrentRengaType == CurrentRengaType.Architecture)
+                return true;
+            if (function.RengaProduct == RengaProduct.Structure &&
+                CurrentRengaType == CurrentRengaType.Structure)
+                return true;
+            if (function.RengaProduct == RengaProduct.MEP &&
+                CurrentRengaType == CurrentRengaType.MEP)
+                return true;
+            return false;
         }
     }
 }

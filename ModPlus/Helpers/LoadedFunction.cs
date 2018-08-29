@@ -1,8 +1,9 @@
 ﻿namespace ModPlus.Helpers
 {
+    using System.Reflection;
     using ModPlusAPI.Interfaces;
 
-    public class LoadedFunction : IModPlusFunctionForRenga
+    internal class LoadedFunction : IModPlusFunctionForRenga
     {
         public SupportedProduct SupportedProduct { get; set; }
 
@@ -11,6 +12,10 @@
         public RengaProduct RengaProduct { get; set; }
 
         public FunctionUILocation UiLocation { get; set; }
+
+        public ContextMenuShowCase ContextMenuShowCase { get; set; }
+
+        public ViewType ViewType { get; set; }
 
         public string ActionButtonViewType { get; set; }
 
@@ -26,12 +31,6 @@
 
         public string FullDescription { get; set; }
 
-        public string ToolTipHelpImage { get; set; }
-
-        public string SmallIconUrl { get; set; }
-
-        public string MiddleIconUrl { get; set; }
-
-        public string BigIconUrl { get; set; }
+        public Assembly FunctionAssembly { get; set; }
     }
 }
