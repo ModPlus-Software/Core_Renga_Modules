@@ -1,4 +1,6 @@
-﻿namespace ModPlus.Helpers
+﻿using ModPlusAPI;
+
+namespace ModPlus.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -68,15 +70,15 @@
                             var lf = new LoadedFunction
                             {
                                 Name = function.Name,
-                                LName = function.LName,
+                                LName = Language.GetFunctionLocalName(function.Name, function.LName),
                                 ActionButtonViewType = function.ActionButtonViewType,
                                 RengaProduct = function.RengaProduct,
                                 UiLocation = function.UiLocation,
                                 ContextMenuShowCase = function.ContextMenuShowCase,
                                 ViewType = function.ViewType,
                                 IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
-                                Description = function.Description,
-                                FullDescription = function.FullDescription,
+                                Description = Language.GetFunctionShortDescrition(function.Name, function.Description),
+                                FullDescription = Language.GetFunctionFullDescription(function.Name, function.FullDescription),
                                 FunctionAssembly = loadedFuncAssembly
                             };
 

@@ -52,7 +52,6 @@
                         {
                             Renga.IUIPanelExtension uiIPanelExtensionForActionPanel = ui.CreateUIPanelExtension();
                             uiIPanelExtensionForActionPanel.AddToolButton(action);
-
                         }
                     }
                     else

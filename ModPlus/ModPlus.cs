@@ -1,6 +1,4 @@
-﻿using ModPlusAPI.Windows;
-
-namespace ModPlus
+﻿namespace ModPlus
 {
     using System;
     using System.Collections.Generic;
@@ -30,7 +28,7 @@ namespace ModPlus
                     return false;
 
                 // statistic
-                ////Statistic.SendPluginStarting("Renga", MpVersionData.CurRevitVers);
+                Statistic.SendPluginStarting("Renga", LoadFunctionsHelper.CurrentRengaType.ToString());
 
                 // Принудительная загрузка сборок
                 LoadAssemblies();
