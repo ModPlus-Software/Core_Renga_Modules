@@ -71,11 +71,10 @@ namespace ModPlus.Helpers
                             {
                                 Name = function.Name,
                                 LName = Language.GetFunctionLocalName(function.Name, function.LName),
-                                ActionButtonViewType = function.ActionButtonViewType,
+                                ViewTypes = function.ViewTypes,
                                 RengaProduct = function.RengaProduct,
                                 UiLocation = function.UiLocation,
                                 ContextMenuShowCase = function.ContextMenuShowCase,
-                                ViewType = function.ViewType,
                                 IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
                                 Description = Language.GetFunctionShortDescrition(function.Name, function.Description),
                                 FullDescription = Language.GetFunctionFullDescription(function.Name, function.FullDescription),

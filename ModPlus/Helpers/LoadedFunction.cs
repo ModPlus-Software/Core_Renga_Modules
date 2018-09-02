@@ -1,5 +1,6 @@
 ﻿namespace ModPlus.Helpers
 {
+    using System.Collections.Generic;
     using System.Reflection;
     using ModPlusAPI.Interfaces;
 
@@ -15,9 +16,7 @@
 
         public ContextMenuShowCase ContextMenuShowCase { get; set; }
 
-        public ViewType ViewType { get; set; }
-
-        public string ActionButtonViewType { get; set; }
+        public List<ViewType> ViewTypes { get; set; }
 
         public bool IsAddingToMenuBySelf { get; set; }
 

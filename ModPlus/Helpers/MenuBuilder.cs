@@ -58,18 +58,24 @@
                     {
                         if (loadedFunction.ContextMenuShowCase == ModPlusAPI.Interfaces.ContextMenuShowCase.Selection)
                         {
-                            // context menu for selection
-                            var contextMenuForSelection = ui.CreateContextMenu();
-                            contextMenuForSelection.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true));
-                            ui.AddContextMenu(
-                                Guid.NewGuid(), contextMenuForSelection, GetRengaViewType(loadedFunction.ViewType), Renga.ContextMenuShowCase.ContextMenuShowCase_Selection);
+                            foreach (var viewType in loadedFunction.ViewTypes)
+                            {
+                                // context menu for selection
+                                var contextMenuForSelection = ui.CreateContextMenu();
+                                contextMenuForSelection.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true));
+                                ui.AddContextMenu(
+                                    Guid.NewGuid(), contextMenuForSelection, GetRengaViewType(viewType), Renga.ContextMenuShowCase.ContextMenuShowCase_Selection);
+                            }
                         }
                         else
                         {
-                            var contextMenuForScene = ui.CreateContextMenu();
-                            contextMenuForScene.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true));
-                            ui.AddContextMenu(
-                                Guid.NewGuid(), contextMenuForScene, GetRengaViewType(loadedFunction.ViewType), Renga.ContextMenuShowCase.ContextMenuShowCase_Selection);
+                            foreach (var viewType in loadedFunction.ViewTypes)
+                            {
+                                var contextMenuForScene = ui.CreateContextMenu();
+                                contextMenuForScene.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true));
+                                ui.AddContextMenu(
+                                    Guid.NewGuid(), contextMenuForScene, GetRengaViewType(viewType), Renga.ContextMenuShowCase.ContextMenuShowCase_Selection);
+                            }
                         }
                     }
                 }
