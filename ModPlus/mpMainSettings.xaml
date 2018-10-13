@@ -20,45 +20,26 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <GroupBox Header="{Binding Source={StaticResource Lang}, XPath=h2}" Grid.Row="0">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                </Grid.RowDefinitions>
-                <!-- Language -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h5}"
-                               VerticalAlignment="Center" MinWidth="120"></TextBlock>
-                    <ComboBox Name="CbLanguages">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=DisplayName}"></TextBlock>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </StackPanel>
-                <!--Theme-->
-                <StackPanel Orientation="Horizontal" Grid.Row="1">
-                    <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h6}"
-                               VerticalAlignment="Center" MinWidth="120"></TextBlock>
-                    <ComboBox ItemsSource="{Binding}" Name="MiTheme" 
-                              SelectionChanged="MiTheme_OnSelectionChanged">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate DataType="mps:Theme">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border CornerRadius="4" Width="40" Height="30"
-                                            Background="{Binding Path=ShowCaseBackgroundBrush}">
-                                        <Ellipse HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                 Width="20" Height="20"
-                                                 Fill="{Binding Path=ShowcaseBrush}"></Ellipse>
-                                    </Border>
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding Path=DisplayName}" Margin="10 0"></TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </StackPanel>
-            </Grid>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h6}"
+                           VerticalAlignment="Center" MinWidth="120"></TextBlock>
+                <ComboBox ItemsSource="{Binding}" Name="MiTheme" 
+                          SelectionChanged="MiTheme_OnSelectionChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="mps:Theme">
+                            <StackPanel Orientation="Horizontal">
+                                <Border CornerRadius="4" Width="40" Height="30"
+                                        Background="{Binding Path=ShowCaseBackgroundBrush}">
+                                    <Ellipse HorizontalAlignment="Center" VerticalAlignment="Center"
+                                             Width="20" Height="20"
+                                             Fill="{Binding Path=ShowcaseBrush}"></Ellipse>
+                                </Border>
+                                <TextBlock VerticalAlignment="Center" Text="{Binding Path=DisplayName}" Margin="10 0"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
         </GroupBox>
         <GroupBox Header="{Binding Source={StaticResource Lang}, XPath=h3}" Grid.Row="1">
             <StackPanel Orientation="Horizontal">
