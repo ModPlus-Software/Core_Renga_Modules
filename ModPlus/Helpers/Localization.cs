@@ -43,10 +43,32 @@
                 return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.AssemblyInstance));
             if (rengaObjectType == Renga.ObjectTypes.Element)
                 return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Element));
+            if (rengaObjectType == Renga.ObjectTypes.RoutePoint)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.RoutePoint));
+            if (rengaObjectType == Renga.ObjectTypes.Route)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Route));
+            if (rengaObjectType == Renga.ObjectTypes.PlumbingFixture)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.PlumbingFixture));
+            if (rengaObjectType == Renga.ObjectTypes.Equipment)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Equipment));
+            if (rengaObjectType == Renga.ObjectTypes.Pipe)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Pipe));
+            if (rengaObjectType == Renga.ObjectTypes.PipelineAccessory)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.PipelineAccessory));
+            if (rengaObjectType == Renga.ObjectTypes.PipeFitting)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.PipeFitting));
             if (rengaObjectType == Renga.ObjectTypes.IfcObject)
                 return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.IfcObject));
             if (rengaObjectType == Renga.ObjectTypes.Rebar)
                 return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Rebar));
+            if (rengaObjectType == Renga.ObjectTypes.Axis)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Axis));
+            if (rengaObjectType == Renga.ObjectTypes.Section)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Section));
+            if (rengaObjectType == Renga.ObjectTypes.Elevation)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Elevation));
+            if (rengaObjectType == Renga.ObjectTypes.Plate)
+                return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Plate));
 
             return Language.GetItem(LangItem, nameof(Renga.ObjectTypes.Undefined));
         }

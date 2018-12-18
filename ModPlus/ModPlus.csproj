@@ -47,8 +47,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Renga.NET.PluginUtility">
-      <HintPath>C:\_RengaSDK\Net\Renga.NET.PluginUtility.dll</HintPath>
+    <Reference Include="Renga.NET.PluginUtility, Version=3.0.17312.62662, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\ModPlus\Extensions\Renga.NET.PluginUtility.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
