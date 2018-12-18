@@ -43,7 +43,7 @@
                 {
                     if (loadedFunction.UiLocation == FunctionUILocation.PrimaryPanel)
                     {
-                        dropDownButton.AddAction(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, false));
+                        dropDownButton.AddAction(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, false, true));
                     }
                     else if (loadedFunction.UiLocation == FunctionUILocation.ActionPanel)
                     {
@@ -62,7 +62,7 @@
                             {
                                 // context menu for selection
                                 var contextMenuForSelection = ui.CreateContextMenu();
-                                contextMenuForSelection.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true));
+                                contextMenuForSelection.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true, false));
                                 ui.AddContextMenu(
                                     Guid.NewGuid(), contextMenuForSelection, GetRengaViewType(viewType), Renga.ContextMenuShowCase.ContextMenuShowCase_Selection);
                             }
@@ -72,7 +72,7 @@
                             foreach (var viewType in loadedFunction.ViewTypes)
                             {
                                 var contextMenuForScene = ui.CreateContextMenu();
-                                contextMenuForScene.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true));
+                                contextMenuForScene.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true, false));
                                 ui.AddContextMenu(
                                     Guid.NewGuid(), contextMenuForScene, GetRengaViewType(viewType), Renga.ContextMenuShowCase.ContextMenuShowCase_Selection);
                             }
@@ -129,14 +129,20 @@
         /// <param name="actionEventSources">The action event sources.</param>
         /// <param name="loadedFunction">The loaded function.</param>
         /// <param name="isForContextMenu">if set to <c>true</c> [is for context menu].</param>
-        private static IAction GetActionForFunction(IApplication rengaApplication, List<ActionEventSource> actionEventSources, LoadedFunction loadedFunction, bool isForContextMenu)
+        /// <param name="isForDropDownMenu">if set to <c>true</c> [is for dropdown menu]</param>
+        private static IAction GetActionForFunction(
+            IApplication rengaApplication,
+            List<ActionEventSource> actionEventSources, 
+            LoadedFunction loadedFunction,
+            bool isForContextMenu,
+            bool isForDropDownMenu)
         {
             var f = GetImplementRengaFunctionFromLoadedFunction(loadedFunction);
             if (f != null)
             {
                 var action = rengaApplication.UI.CreateAction();
                 byte[] extractedImageResource =
-                    isForContextMenu
+                    isForContextMenu || isForDropDownMenu
                         ? ExtractResource(loadedFunction.FunctionAssembly, loadedFunction.Name + "_16x16.png")
                         : ExtractResource(loadedFunction.FunctionAssembly, loadedFunction.Name + "_24x24.png");
 
