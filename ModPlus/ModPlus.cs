@@ -9,6 +9,7 @@
     using Helpers;
     using Microsoft.Win32;
     using ModPlusAPI;
+    using ModPlusAPI.LicenseServer;
     using Renga;
 
     public class ModPlus : IPlugin
@@ -40,6 +41,9 @@
                 // проверка загруженности модуля автообновления
                 CheckAutoUpdaterLoaded();
 
+                // license server client
+                ClientStarter.StartConnection(ProductLicenseType.Renga);
+
                 return true;
             }
             catch (Exception exception)
@@ -55,6 +59,7 @@
             {
                 actionEventSource.Dispose();
             }
+            ClientStarter.StopConnection();
         }
 
         /// <summary>
