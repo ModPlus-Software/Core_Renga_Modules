@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Reflection;
     using ModPlusAPI;
     using ModPlusAPI.Interfaces;
@@ -20,12 +19,12 @@
             var ui = rengaApplication.UI;
 
             // Create primary drop down menu
-            Renga.IUIPanelExtension uiIPanelExtension = ui.CreateUIPanelExtension();
-            Renga.IDropDownButton dropDownButton = ui.CreateDropDownButton();
+            var uiIPanelExtension = ui.CreateUIPanelExtension();
+            var dropDownButton = ui.CreateDropDownButton();
             var extractedImageResource = ExtractResource(Assembly.GetExecutingAssembly(), "ModPlus_24x24.png");
             if (extractedImageResource != null)
             {
-                IImage icon = ui.CreateImage();
+                var icon = ui.CreateImage();
                 icon.LoadFromData(extractedImageResource, ImageFormat.ImageFormat_PNG);
                 dropDownButton.Icon = icon;
             }
@@ -50,7 +49,7 @@
                         var action = GetActionForButtonInActionPanel(rengaApplication, actionEventSources, loadedFunction);
                         if (action != null)
                         {
-                            Renga.IUIPanelExtension uiIPanelExtensionForActionPanel = ui.CreateUIPanelExtension();
+                            var uiIPanelExtensionForActionPanel = ui.CreateUIPanelExtension();
                             uiIPanelExtensionForActionPanel.AddToolButton(action);
                         }
                     }
@@ -96,24 +95,24 @@
         /// </summary>
         /// <param name="ui">The UI.</param>
         /// <param name="actionEventSources">The action event sources.</param>
-        private static IAction GetActionForSettingsCommand(Renga.IUI ui, List<ActionEventSource> actionEventSources)
+        private static IAction GetActionForSettingsCommand(IUI ui, ICollection<ActionEventSource> actionEventSources)
         {
             var action = ui.CreateAction();
 
             var extractedImageResource = ExtractResource(Assembly.GetExecutingAssembly(), "Settings_16x16.png");
             if (extractedImageResource != null)
             {
-                IImage icon = ui.CreateImage();
+                var icon = ui.CreateImage();
                 icon.LoadFromData(extractedImageResource, ImageFormat.ImageFormat_PNG);
                 action.Icon = icon;
             }
 
             action.DisplayName = Language.GetItem(LangItem, "h12");
 
-            var actionEventSource = new Renga.ActionEventSource(action);
+            var actionEventSource = new ActionEventSource(action);
             actionEventSource.Triggered += (s, e) =>
             {
-                MpMainSettings settings = new MpMainSettings();
+                var settings = new MpMainSettings();
                 settings.ShowDialog();
             };
 
@@ -141,14 +140,14 @@
             if (f != null)
             {
                 var action = rengaApplication.UI.CreateAction();
-                byte[] extractedImageResource =
+                var extractedImageResource =
                     isForContextMenu || isForDropDownMenu
                         ? ExtractResource(loadedFunction.FunctionAssembly, loadedFunction.Name + "_16x16.png")
                         : ExtractResource(loadedFunction.FunctionAssembly, loadedFunction.Name + "_24x24.png");
 
                 if (extractedImageResource != null)
                 {
-                    IImage icon = rengaApplication.UI.CreateImage();
+                    var icon = rengaApplication.UI.CreateImage();
                     icon.LoadFromData(extractedImageResource, ImageFormat.ImageFormat_PNG);
                     action.Icon = icon;
                 }
@@ -183,11 +182,11 @@
             if (f != null)
             {
                 var action = rengaApplication.UI.CreateAction();
-                byte[] extractedImageResource = ExtractResource(loadedFunction.FunctionAssembly, loadedFunction.Name + "_24x24.png");
+                var extractedImageResource = ExtractResource(loadedFunction.FunctionAssembly, loadedFunction.Name + "_24x24.png");
 
                 if (extractedImageResource != null)
                 {
-                    IImage icon = rengaApplication.UI.CreateImage();
+                    var icon = rengaApplication.UI.CreateImage();
                     icon.LoadFromData(extractedImageResource, ImageFormat.ImageFormat_PNG);
                     action.Icon = icon;
                 }
@@ -259,11 +258,11 @@
             {
                 if (manifestResourceName.Contains(filename))
                 {
-                    using (Stream manifestResourceStream = assembly.GetManifestResourceStream(manifestResourceName))
+                    using (var manifestResourceStream = assembly.GetManifestResourceStream(manifestResourceName))
                     {
                         if (manifestResourceStream == null)
                             return null;
-                        byte[] ba = new byte[manifestResourceStream.Length];
+                        var ba = new byte[manifestResourceStream.Length];
                         manifestResourceStream.Read(ba, 0, ba.Length);
                         return ba;
                     }

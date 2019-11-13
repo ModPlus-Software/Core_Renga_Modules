@@ -3,10 +3,18 @@
     using System;
     using ModPlusAPI;
 
+    /// <summary>
+    /// Дополнительные утилиты локализации в контексте Renga
+    /// </summary>
     public static class Localization
     {
         private static readonly string LangItem = "RengaDlls";
 
+        /// <summary>
+        /// Локализованное название типа объекта Renga
+        /// </summary>
+        /// <param name="rengaObjectType">Renga object id</param>
+        /// <returns></returns>
         public static string RengaObjectType(Guid rengaObjectType)
         {
             if (rengaObjectType == Renga.ObjectTypes.Level)
