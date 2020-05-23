@@ -9,7 +9,10 @@
     using Helpers;
     using Microsoft.Win32;
     using ModPlusAPI;
+    using ModPlusAPI.Interfaces;
     using ModPlusAPI.LicenseServer;
+    using ModPlusAPI.UserInfo;
+    using ModPlusAPI.Windows;
     using Renga;
 
     public class ModPlus : IPlugin
@@ -18,6 +21,7 @@
 
         public List<ActionEventSource> ActionEventSources { get; private set; }
 
+        /// <inheritdoc/>
         public bool Initialize(string pluginFolder)
         {
             RengaApplication = new Renga.Application();
@@ -41,8 +45,17 @@
                 // проверка загруженности модуля автообновления
                 CheckAutoUpdaterLoaded();
 
-                // license server client
-                ClientStarter.StartConnection(ProductLicenseType.Renga);
+                var disableConnectionWithLicenseServer = Variables.DisableConnectionWithLicenseServerInRenga;
+
+                // license server
+                if (Variables.IsLocalLicenseServerEnable && !disableConnectionWithLicenseServer)
+                    ClientStarter.StartConnection(SupportedProduct.Renga);
+                
+                if (Variables.IsWebLicenseServerEnable && !disableConnectionWithLicenseServer)
+                    WebLicenseServerClient.Instance.Start(SupportedProduct.Renga);
+
+                // user info
+                AuthorizationOnStartup();
 
                 return true;
             }
@@ -53,12 +66,14 @@
             }
         }
 
+        /// <inheritdoc/>
         public void Stop()
         {
             foreach (var actionEventSource in ActionEventSources)
             {
                 actionEventSource.Dispose();
             }
+
             ClientStarter.StopConnection();
         }
 
@@ -97,9 +112,7 @@
                     foreach (var functionKeyName in functionsKey.GetSubKeyNames())
                     {
                         var functionKey = functionsKey.OpenSubKey(functionKeyName);
-                        if (functionKey == null)
-                            continue;
-                        var prForValue = functionKey.GetValue("ProductFor");
+                        var prForValue = functionKey?.GetValue("ProductFor");
                         if (prForValue != null && prForValue.Equals("Renga"))
                         {
                             // беру свойства функции из реестра
@@ -108,6 +121,7 @@
                             if (string.IsNullOrEmpty(onOff))
                                 continue;
                             var isOn = !bool.TryParse(onOff, out var b) || b; // default - true
+                            
                             // Если "Продукт для" подходит, файл существует и функция включена - гружу
                             if (isOn)
                             {
@@ -144,7 +158,7 @@
         {
             try
             {
-                var loadWithWindows = !bool.TryParse(Regestry.GetValue("AutoUpdater", "LoadWithWindows"), out var b) || b;
+                var loadWithWindows = !bool.TryParse(RegistryUtils.GetValue("AutoUpdater", "LoadWithWindows"), out var b) || b;
                 if (loadWithWindows)
                 {
                     // Если "грузить с виндой", то проверяем, что модуль запущен
@@ -163,6 +177,26 @@
             catch (Exception exception)
             {
                 Statistic.SendException(exception);
+            }
+        }
+
+        private async void AuthorizationOnStartup()
+        {
+            try
+            {
+                await UserInfoService.GetUserInfoAsync();
+                var userInfo = UserInfoService.GetUserInfoResponseFromHash();
+                if (userInfo != null)
+                {
+                    if (!userInfo.IsLocalData && !await ModPlusAPI.Web.Connection.HasAllConnectionAsync(3))
+                    {
+                        Variables.UserInfoHash = string.Empty;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                ExceptionBox.Show(exception);
             }
         }
     }

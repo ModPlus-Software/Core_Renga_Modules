@@ -60,7 +60,7 @@ namespace ModPlus.Helpers
             var types = GetLoadableTypes(loadedFuncAssembly);
             foreach (var type in types)
             {
-                var i = type.GetInterface(typeof(IModPlusFunctionForRenga).Name);
+                var i = type.GetInterface(nameof(IModPlusFunctionForRenga));
                 if (i != null)
                 {
                     if (Activator.CreateInstance(type) is IModPlusFunctionForRenga function)
@@ -76,7 +76,7 @@ namespace ModPlus.Helpers
                                 UiLocation = function.UiLocation,
                                 ContextMenuShowCase = function.ContextMenuShowCase,
                                 IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
-                                Description = Language.GetFunctionShortDescrition(function.Name, function.Description),
+                                Description = Language.GetFunctionShortDescription(function.Name, function.Description),
                                 FullDescription = Language.GetFunctionFullDescription(function.Name, function.FullDescription),
                                 FunctionAssembly = loadedFuncAssembly
                             };

@@ -9,7 +9,7 @@
 
     internal static class MenuBuilder
     {
-        private static readonly string LangItem = "RengaDlls";
+        private const string LangItem = "RengaDlls";
 
         internal static void Build(Application rengaApplication, List<ActionEventSource> actionEventSources)
         {
@@ -82,12 +82,43 @@
 
             // add settings button to primary menu
             dropDownButton.AddSeparator();
+            dropDownButton.AddAction(GetActionForPersonalAccountCommand(ui, actionEventSources));
             dropDownButton.AddAction(GetActionForSettingsCommand(ui, actionEventSources));
 
             uiIPanelExtension.AddDropDownButton(dropDownButton);
 
             // Add controls to the primary panel:
             ui.AddExtensionToPrimaryPanel(uiIPanelExtension);
+        }
+
+        /// <summary>
+        /// Получить IAction для кнопки запуска настроек
+        /// </summary>
+        /// <param name="ui">The UI.</param>
+        /// <param name="actionEventSources">The action event sources.</param>
+        private static IAction GetActionForPersonalAccountCommand(IUI ui, ICollection<ActionEventSource> actionEventSources)
+        {
+            var action = ui.CreateAction();
+
+            var extractedImageResource = ExtractResource(Assembly.GetExecutingAssembly(), "PersonalAccount_16x16.png");
+            if (extractedImageResource != null)
+            {
+                var icon = ui.CreateImage();
+                icon.LoadFromData(extractedImageResource, ImageFormat.ImageFormat_PNG);
+                action.Icon = icon;
+            }
+
+            action.DisplayName = Language.GetItem(LangItem, "h7");
+
+            var actionEventSource = new ActionEventSource(action);
+            actionEventSource.Triggered += (s, e) =>
+            {
+                ModPlusAPI.UserInfo.UserInfoService.ShowUserInfo();
+            };
+
+            actionEventSources.Add(actionEventSource);
+
+            return action;
         }
 
         /// <summary>
@@ -107,12 +138,15 @@
                 action.Icon = icon;
             }
 
-            action.DisplayName = Language.GetItem(LangItem, "h12");
+            action.DisplayName = Language.GetItem(LangItem, "h9");
 
             var actionEventSource = new ActionEventSource(action);
             actionEventSource.Triggered += (s, e) =>
             {
-                var settings = new MpMainSettings();
+                var settings = new SettingsWindow();
+                var viewModel = new SettingsViewModel(settings);
+                settings.DataContext = viewModel;
+                settings.Closed += (sender, args) => viewModel.ApplySettings();
                 settings.ShowDialog();
             };
 
@@ -239,7 +273,7 @@
         {
             foreach (var t in loadedFunction.FunctionAssembly.GetTypes())
             {
-                var c = t.GetInterface(typeof(IRengaFunction).Name);
+                var c = t.GetInterface(nameof(IRengaFunction));
                 if (c != null && Activator.CreateInstance(t) is IRengaFunction function)
                     return function;
             }
