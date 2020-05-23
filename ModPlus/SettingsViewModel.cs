@@ -336,7 +336,7 @@
                 // Для пользователя "{0}" имеется доступ к серверу лицензий "{1}"
                 ModPlusAPI.Windows.MessageBox.Show(
                     string.Format(Language.GetItem(LangApi, "h41"), WebLicenseServerUserEmail, WebLicenseServerGuid),
-                    MessageBoxIcon.Close);
+                    MessageBoxIcon.Message);
             }
             else
             {
