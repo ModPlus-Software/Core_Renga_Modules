@@ -1,13 +1,11 @@
-﻿using ModPlusAPI;
-
-namespace ModPlus.Helpers
+﻿namespace ModPlus.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using ModPlusAPI;
     using ModPlusAPI.Interfaces;
 
     internal static class LoadFunctionsHelper
@@ -16,11 +14,8 @@ namespace ModPlus.Helpers
         {
             if (LoadedFunctions == null)
                 LoadedFunctions = new List<LoadedFunction>();
-            CurrentRengaType = GetCurrentRengaType();
         }
-
-        internal static CurrentRengaType CurrentRengaType { get; }
-
+        
         internal static List<LoadedFunction> LoadedFunctions { get; set; }
 
         /// <summary>
@@ -65,24 +60,21 @@ namespace ModPlus.Helpers
                 {
                     if (Activator.CreateInstance(type) is IModPlusFunctionForRenga function)
                     {
-                        if (IsFunctionAllowableForCurrentRengaType(function))
+                        var lf = new LoadedFunction
                         {
-                            var lf = new LoadedFunction
-                            {
-                                Name = function.Name,
-                                LName = Language.GetFunctionLocalName(function.Name, function.LName),
-                                ViewTypes = function.ViewTypes,
-                                RengaProduct = function.RengaProduct,
-                                UiLocation = function.UiLocation,
-                                ContextMenuShowCase = function.ContextMenuShowCase,
-                                IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
-                                Description = Language.GetFunctionShortDescription(function.Name, function.Description),
-                                FullDescription = Language.GetFunctionFullDescription(function.Name, function.FullDescription),
-                                FunctionAssembly = loadedFuncAssembly
-                            };
+                            Name = function.Name,
+                            LName = Language.GetFunctionLocalName(function.Name, function.LName),
+                            ViewTypes = function.ViewTypes,
+                            UiLocation = function.UiLocation,
+                            ContextMenuShowCase = function.ContextMenuShowCase,
+                            IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
+                            Description = Language.GetFunctionShortDescription(function.Name, function.Description),
+                            FullDescription =
+                                Language.GetFunctionFullDescription(function.Name, function.FullDescription),
+                            FunctionAssembly = loadedFuncAssembly
+                        };
 
-                            LoadedFunctions.Add(lf);
-                        }
+                        LoadedFunctions.Add(lf);
                     }
 
                     break;
@@ -102,32 +94,6 @@ namespace ModPlus.Helpers
             {
                 return e.Types.Where(t => t != null);
             }
-        }
-
-        private static CurrentRengaType GetCurrentRengaType()
-        {
-            var t = Process.GetCurrentProcess().MainWindowTitle;
-            if (t.ToLower().Contains("architecture"))
-                return CurrentRengaType.Architecture;
-            if (t.ToLower().Contains("structure"))
-                return CurrentRengaType.Structure;
-            return CurrentRengaType.MEP;
-        }
-
-        private static bool IsFunctionAllowableForCurrentRengaType(IModPlusFunctionForRenga function)
-        {
-            if (function.RengaProduct == RengaProduct.Any)
-                return true;
-            if (function.RengaProduct == RengaProduct.Architecture &&
-                CurrentRengaType == CurrentRengaType.Architecture)
-                return true;
-            if (function.RengaProduct == RengaProduct.Structure &&
-                CurrentRengaType == CurrentRengaType.Structure)
-                return true;
-            if (function.RengaProduct == RengaProduct.MEP &&
-                CurrentRengaType == CurrentRengaType.MEP)
-                return true;
-            return false;
         }
     }
 }

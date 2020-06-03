@@ -10,8 +10,6 @@
 
         public string Name { get; set; }
 
-        public RengaProduct RengaProduct { get; set; }
-
         public FunctionUILocation UiLocation { get; set; }
 
         public ContextMenuShowCase ContextMenuShowCase { get; set; }

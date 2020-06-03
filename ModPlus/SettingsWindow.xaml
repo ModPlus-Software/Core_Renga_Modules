@@ -66,7 +66,7 @@
                            Visibility="{Binding Path=MessageAboutLanguageVisibility}"
                            TextWrapping="Wrap" MaxWidth="400"
                            HorizontalAlignment="Center" TextAlignment="Center"
-                           Text="{Binding Source={StaticResource Lang}, XPath=h14}"
+                           Text="{Binding Source={StaticResource Lang}, XPath=h10}"
                            Name="TbMessageAboutLanguage"
                            FontWeight="SemiBold" Foreground="{DynamicResource ErrorBrush}"/>
 

@@ -13,19 +13,19 @@
     using ModPlusAPI.LicenseServer;
     using ModPlusAPI.UserInfo;
     using ModPlusAPI.Windows;
-    using Renga;
 
-    public class ModPlus : IPlugin
+    /// <inheritdoc />
+    public class ModPlus : Renga.IPlugin
     {
-        public Application RengaApplication { get; private set; }
+        public Renga.Application RengaApplication { get; private set; }
 
-        public List<ActionEventSource> ActionEventSources { get; private set; }
+        public List<Renga.ActionEventSource> ActionEventSources { get; private set; }
 
         /// <inheritdoc/>
         public bool Initialize(string pluginFolder)
         {
             RengaApplication = new Renga.Application();
-            ActionEventSources = new List<ActionEventSource>();
+            ActionEventSources = new List<Renga.ActionEventSource>();
             try
             {
                 // init lang
@@ -33,7 +33,7 @@
                     return false;
 
                 // statistic
-                Statistic.SendPluginStarting("Renga", LoadFunctionsHelper.CurrentRengaType.ToString());
+                Statistic.SendPluginStarting("Renga", "4.0");
 
                 // Принудительная загрузка сборок
                 LoadAssemblies();
@@ -61,7 +61,7 @@
             }
             catch (Exception exception)
             {
-                RengaApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
+                RengaApplication.UI.ShowMessageBox(Renga.MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
                 return false;
             }
         }
@@ -95,7 +95,7 @@
             }
             catch (Exception exception)
             {
-                RengaApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
+                RengaApplication.UI.ShowMessageBox(Renga.MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
             }
         }
 
@@ -147,7 +147,7 @@
             }
             catch (Exception exception)
             {
-                RengaApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
+                RengaApplication.UI.ShowMessageBox(Renga.MessageIcon.MessageIcon_Error, "ModPlus", exception.Message);
             }
         }
 

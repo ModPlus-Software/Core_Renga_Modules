@@ -460,7 +460,7 @@
                 var bi = new BitmapImage();
                 bi.BeginInit();
                 bi.UriSource = new Uri(
-                    $"pack://application:,,,/ModPlus;component/Resources/Flags/{SelectedLanguage.Name}.png");
+                    $"pack://application:,,,/ModPlus_Renga;component/Resources/Flags/{SelectedLanguage.Name}.png");
                 bi.EndInit();
                 LanguageImage = bi;
             }
