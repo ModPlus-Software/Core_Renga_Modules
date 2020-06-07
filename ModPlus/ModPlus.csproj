@@ -60,17 +60,6 @@
     <Compile Include="SettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Renga">
-      <Guid>{0EC5D324-8B9F-4D30-84ED-AB711618D1C1}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="ModPlus.rndesc" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +102,17 @@
     <Resource Include="Resources\Flags\en-US.png" />
     <Resource Include="Resources\Flags\ru-RU.png" />
     <Resource Include="Resources\Flags\uk-UA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Renga">
+      <Guid>{0EC5D324-8B9F-4D30-84ED-AB711618D1C1}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
