@@ -9,7 +9,7 @@
     using Helpers;
     using Microsoft.Win32;
     using ModPlusAPI;
-    using ModPlusAPI.Interfaces;
+    using ModPlusAPI.Enums;
     using ModPlusAPI.LicenseServer;
     using ModPlusAPI.UserInfo;
     using ModPlusAPI.Windows;
@@ -33,7 +33,7 @@
                     return false;
 
                 // statistic
-                Statistic.SendPluginStarting("Renga", "4.0");
+                Statistic.SendModuleLoaded("Renga", "4.0");
 
                 // Принудительная загрузка сборок
                 LoadAssemblies();
@@ -129,15 +129,15 @@
                                 {
                                     // load
                                     var localFuncAssembly = Assembly.LoadFrom(file);
-                                    LoadFunctionsHelper.GetDataFromFunctionInterface(localFuncAssembly, file);
+                                    LoadPluginsHelper.GetDataFromFunctionInterface(localFuncAssembly, file);
                                 }
                                 else
                                 {
-                                    var foundedFile = LoadFunctionsHelper.FindFile(functionKeyName);
+                                    var foundedFile = LoadPluginsHelper.FindFile(functionKeyName);
                                     if (!string.IsNullOrEmpty(foundedFile) && File.Exists(foundedFile))
                                     {
                                         var localFuncAssembly = Assembly.LoadFrom(foundedFile);
-                                        LoadFunctionsHelper.GetDataFromFunctionInterface(localFuncAssembly, foundedFile);
+                                        LoadPluginsHelper.GetDataFromFunctionInterface(localFuncAssembly, foundedFile);
                                     }
                                 }
                             }

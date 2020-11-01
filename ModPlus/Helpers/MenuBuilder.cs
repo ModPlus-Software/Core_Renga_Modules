@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Reflection;
     using ModPlusAPI;
-    using ModPlusAPI.Interfaces;
+    using ModPlusAPI.Enums;
     using Renga;
 
     internal static class MenuBuilder
@@ -14,7 +14,7 @@
         internal static void Build(Application rengaApplication, List<ActionEventSource> actionEventSources)
         {
             // sort functions by LName
-            LoadFunctionsHelper.LoadedFunctions.Sort((f1, f2) => string.Compare(f1.LName, f2.LName, StringComparison.Ordinal));
+            LoadPluginsHelper.LoadedFunctions.Sort((f1, f2) => string.Compare(f1.LName, f2.LName, StringComparison.Ordinal));
 
             var ui = rengaApplication.UI;
 
@@ -32,7 +32,7 @@
             // DropDownButton has it's own name and icon
             dropDownButton.ToolTip = "ModPlus";
 
-            foreach (var loadedFunction in LoadFunctionsHelper.LoadedFunctions)
+            foreach (var loadedFunction in LoadPluginsHelper.LoadedFunctions)
             {
                 if (loadedFunction.IsAddingToMenuBySelf)
                 {
@@ -40,11 +40,11 @@
                 }
                 else
                 {
-                    if (loadedFunction.UiLocation == FunctionUILocation.PrimaryPanel)
+                    if (loadedFunction.UiLocation == RengaFunctionUILocation.PrimaryPanel)
                     {
                         dropDownButton.AddAction(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, false, true));
                     }
-                    else if (loadedFunction.UiLocation == FunctionUILocation.ActionPanel)
+                    else if (loadedFunction.UiLocation == RengaFunctionUILocation.ActionPanel)
                     {
                         var action = GetActionForButtonInActionPanel(rengaApplication, actionEventSources, loadedFunction);
                         if (action != null)
@@ -55,7 +55,7 @@
                     }
                     else
                     {
-                        if (loadedFunction.ContextMenuShowCase == ModPlusAPI.Interfaces.ContextMenuShowCase.Selection)
+                        if (loadedFunction.ContextMenuShowCase == RengaContextMenuShowCase.Selection)
                         {
                             foreach (var viewType in loadedFunction.ViewTypes)
                             {
@@ -63,7 +63,7 @@
                                 var contextMenuForSelection = ui.CreateContextMenu();
                                 contextMenuForSelection.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true, false));
                                 ui.AddContextMenu(
-                                    Guid.NewGuid(), contextMenuForSelection, GetRengaViewType(viewType), Renga.ContextMenuShowCase.ContextMenuShowCase_Selection);
+                                    Guid.NewGuid(), contextMenuForSelection, GetRengaViewType(viewType), ContextMenuShowCase.ContextMenuShowCase_Selection);
                             }
                         }
                         else
@@ -73,7 +73,7 @@
                                 var contextMenuForScene = ui.CreateContextMenu();
                                 contextMenuForScene.AddActionItem(GetActionForFunction(rengaApplication, actionEventSources, loadedFunction, true, false));
                                 ui.AddContextMenu(
-                                    Guid.NewGuid(), contextMenuForScene, GetRengaViewType(viewType), Renga.ContextMenuShowCase.ContextMenuShowCase_Selection);
+                                    Guid.NewGuid(), contextMenuForScene, GetRengaViewType(viewType), ContextMenuShowCase.ContextMenuShowCase_Selection);
                             }
                         }
                     }
@@ -165,7 +165,7 @@
         /// <param name="isForDropDownMenu">if set to <c>true</c> [is for dropdown menu]</param>
         private static IAction GetActionForFunction(
             IApplication rengaApplication,
-            List<ActionEventSource> actionEventSources, 
+            ICollection<ActionEventSource> actionEventSources, 
             LoadedFunction loadedFunction,
             bool isForContextMenu,
             bool isForDropDownMenu)
@@ -176,8 +176,8 @@
                 var action = rengaApplication.UI.CreateAction();
                 var extractedImageResource =
                     isForContextMenu || isForDropDownMenu
-                        ? ExtractResource(loadedFunction.FunctionAssembly, loadedFunction.Name + "_16x16.png")
-                        : ExtractResource(loadedFunction.FunctionAssembly, loadedFunction.Name + "_24x24.png");
+                        ? ExtractResource(loadedFunction.PluginAssembly, loadedFunction.Name + "_16x16.png")
+                        : ExtractResource(loadedFunction.PluginAssembly, loadedFunction.Name + "_24x24.png");
 
                 if (extractedImageResource != null)
                 {
@@ -216,7 +216,7 @@
             if (f != null)
             {
                 var action = rengaApplication.UI.CreateAction();
-                var extractedImageResource = ExtractResource(loadedFunction.FunctionAssembly, loadedFunction.Name + "_24x24.png");
+                var extractedImageResource = ExtractResource(loadedFunction.PluginAssembly, loadedFunction.Name + "_24x24.png");
 
                 if (extractedImageResource != null)
                 {
@@ -271,7 +271,7 @@
         /// <param name="loadedFunction">Загруженная функция</param>
         private static IRengaFunction GetImplementRengaFunctionFromLoadedFunction(LoadedFunction loadedFunction)
         {
-            foreach (var t in loadedFunction.FunctionAssembly.GetTypes())
+            foreach (var t in loadedFunction.PluginAssembly.GetTypes())
             {
                 var c = t.GetInterface(nameof(IRengaFunction));
                 if (c != null && Activator.CreateInstance(t) is IRengaFunction function)
@@ -306,23 +306,23 @@
             return null;
         }
 
-        private static Renga.ViewType GetRengaViewType(ModPlusAPI.Interfaces.ViewType modplusViewType)
+        private static ViewType GetRengaViewType(RengaViewType modplusViewType)
         {
             switch (modplusViewType)
             {
-                case ModPlusAPI.Interfaces.ViewType.Assembly: return Renga.ViewType.ViewType_Assembly;
-                case ModPlusAPI.Interfaces.ViewType.Facade: return Renga.ViewType.ViewType_Facade;
-                case ModPlusAPI.Interfaces.ViewType.Level: return Renga.ViewType.ViewType_Level;
-                case ModPlusAPI.Interfaces.ViewType.ProjectExplorer: return Renga.ViewType.ViewType_ProjectExplorer;
-                case ModPlusAPI.Interfaces.ViewType.Section: return Renga.ViewType.ViewType_Section;
-                case ModPlusAPI.Interfaces.ViewType.SectionProfile: return Renga.ViewType.ViewType_SectionProfile;
-                case ModPlusAPI.Interfaces.ViewType.Sheet: return Renga.ViewType.ViewType_Sheet;
-                case ModPlusAPI.Interfaces.ViewType.Specification: return Renga.ViewType.ViewType_Specification;
-                case ModPlusAPI.Interfaces.ViewType.Table: return Renga.ViewType.ViewType_Table;
-                case ModPlusAPI.Interfaces.ViewType.View3D: return Renga.ViewType.ViewType_View3D;
+                case RengaViewType.Assembly: return ViewType.ViewType_Assembly;
+                case RengaViewType.Facade: return ViewType.ViewType_Facade;
+                case RengaViewType.Level: return ViewType.ViewType_Level;
+                case RengaViewType.ProjectExplorer: return ViewType.ViewType_ProjectExplorer;
+                case RengaViewType.Section: return ViewType.ViewType_Section;
+                case RengaViewType.SectionProfile: return ViewType.ViewType_SectionProfile;
+                case RengaViewType.Sheet: return ViewType.ViewType_Sheet;
+                case RengaViewType.Specification: return ViewType.ViewType_Specification;
+                case RengaViewType.Table: return ViewType.ViewType_Table;
+                case RengaViewType.View3D: return ViewType.ViewType_View3D;
             }
 
-            return Renga.ViewType.ViewType_Undefined;
+            return ViewType.ViewType_Undefined;
         }
     }
 }

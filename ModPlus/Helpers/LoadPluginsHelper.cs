@@ -6,16 +6,24 @@
     using System.Linq;
     using System.Reflection;
     using ModPlusAPI;
+    using ModPlusAPI.Abstractions;
+    using ModPlusAPI.Enums;
     using ModPlusAPI.Interfaces;
 
-    internal static class LoadFunctionsHelper
+    /// <summary>
+    /// Вспомогательные утилиты загрузки плагинов
+    /// </summary>
+    internal static class LoadPluginsHelper
     {
-        static LoadFunctionsHelper()
+        static LoadPluginsHelper()
         {
             if (LoadedFunctions == null)
                 LoadedFunctions = new List<LoadedFunction>();
         }
         
+        /// <summary>
+        /// Загруженные плагины
+        /// </summary>
         internal static List<LoadedFunction> LoadedFunctions { get; set; }
 
         /// <summary>
@@ -55,10 +63,10 @@
             var types = GetLoadableTypes(loadedFuncAssembly);
             foreach (var type in types)
             {
-                var i = type.GetInterface(nameof(IModPlusFunctionForRenga));
+                var i = type.GetInterface(nameof(IModPlusPluginForRenga));
                 if (i != null)
                 {
-                    if (Activator.CreateInstance(type) is IModPlusFunctionForRenga function)
+                    if (Activator.CreateInstance(type) is IModPlusPluginForRenga function)
                     {
                         var lf = new LoadedFunction
                         {
@@ -71,7 +79,33 @@
                             Description = Language.GetFunctionShortDescription(function.Name, function.Description),
                             FullDescription =
                                 Language.GetFunctionFullDescription(function.Name, function.FullDescription),
-                            FunctionAssembly = loadedFuncAssembly
+                            PluginAssembly = loadedFuncAssembly
+                        };
+
+                        LoadedFunctions.Add(lf);
+                    }
+
+                    break;
+                }
+
+                // TODO Remove after update all plugins
+                i = type.GetInterface(nameof(IModPlusFunctionForRenga));
+                if (i != null)
+                {
+                    if (Activator.CreateInstance(type) is IModPlusFunctionForRenga function)
+                    {
+                        var lf = new LoadedFunction
+                        {
+                            Name = function.Name,
+                            LName = Language.GetFunctionLocalName(function.Name, function.LName),
+                            ViewTypes = function.ViewTypes.Select(v => (RengaViewType)v).ToList(),
+                            UiLocation = (RengaFunctionUILocation)function.UiLocation,
+                            ContextMenuShowCase = (RengaContextMenuShowCase)function.ContextMenuShowCase,
+                            IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
+                            Description = Language.GetFunctionShortDescription(function.Name, function.Description),
+                            FullDescription =
+                                Language.GetFunctionFullDescription(function.Name, function.FullDescription),
+                            PluginAssembly = loadedFuncAssembly
                         };
 
                         LoadedFunctions.Add(lf);
