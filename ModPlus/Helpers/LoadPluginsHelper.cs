@@ -7,8 +7,6 @@
     using System.Reflection;
     using ModPlusAPI;
     using ModPlusAPI.Abstractions;
-    using ModPlusAPI.Enums;
-    using ModPlusAPI.Interfaces;
 
     /// <summary>
     /// Вспомогательные утилиты загрузки плагинов
@@ -75,32 +73,6 @@
                             ViewTypes = function.ViewTypes,
                             UiLocation = function.UiLocation,
                             ContextMenuShowCase = function.ContextMenuShowCase,
-                            IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
-                            Description = Language.GetFunctionShortDescription(function.Name, function.Description),
-                            FullDescription =
-                                Language.GetFunctionFullDescription(function.Name, function.FullDescription),
-                            PluginAssembly = loadedFuncAssembly
-                        };
-
-                        LoadedFunctions.Add(lf);
-                    }
-
-                    break;
-                }
-
-                // TODO Remove after update all plugins
-                i = type.GetInterface(nameof(IModPlusFunctionForRenga));
-                if (i != null)
-                {
-                    if (Activator.CreateInstance(type) is IModPlusFunctionForRenga function)
-                    {
-                        var lf = new LoadedFunction
-                        {
-                            Name = function.Name,
-                            LName = Language.GetFunctionLocalName(function.Name, function.LName),
-                            ViewTypes = function.ViewTypes.Select(v => (RengaViewType)v).ToList(),
-                            UiLocation = (RengaFunctionUILocation)function.UiLocation,
-                            ContextMenuShowCase = (RengaContextMenuShowCase)function.ContextMenuShowCase,
                             IsAddingToMenuBySelf = function.IsAddingToMenuBySelf,
                             Description = Language.GetFunctionShortDescription(function.Name, function.Description),
                             FullDescription =

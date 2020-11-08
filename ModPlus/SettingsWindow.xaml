@@ -14,10 +14,10 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/ModPlusStyle;component/Styles/Controls.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/ModPlusStyle;component/Styles/Controls.xaml"/>
                 </ResourceDictionary.MergedDictionaries>
             <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/RengaDlls"/>
-            <XmlDataProvider x:Key="LangApi" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/ModPlusAPI"></XmlDataProvider>
+            <XmlDataProvider x:Key="LangApi" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/ModPlusAPI"/>
             <converters:BooleanInverseConverter x:Key="BooleanInverseConverter"/>
         </ResourceDictionary>
     </Window.Resources>
