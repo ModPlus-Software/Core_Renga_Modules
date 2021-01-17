@@ -77,12 +77,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ModPlusAPI">
-      <Version>5.0.0</Version>
+      <Version>6.8.3</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="ModPlusStyle">
-      <Version>3.7.0</Version>
+      <Version>3.7.1</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
