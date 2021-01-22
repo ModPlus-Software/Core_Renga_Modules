@@ -83,6 +83,7 @@
             // add settings button to primary menu
             dropDownButton.AddSeparator();
             dropDownButton.AddAction(GetActionForPersonalAccountCommand(ui, actionEventSources));
+            dropDownButton.AddAction(GetActionForFeedbackCommand(ui, actionEventSources));
             dropDownButton.AddAction(GetActionForSettingsCommand(ui, actionEventSources));
 
             uiIPanelExtension.AddDropDownButton(dropDownButton);
@@ -92,7 +93,7 @@
         }
 
         /// <summary>
-        /// Получить IAction для кнопки запуска настроек
+        /// Получить IAction для кнопки запуска Личного кабинета
         /// </summary>
         /// <param name="ui">The UI.</param>
         /// <param name="actionEventSources">The action event sources.</param>
@@ -154,6 +155,36 @@
 
             return action;
         }
+        
+        /// <summary>
+        /// Получить IAction для кнопки запуска Обратной связи
+        /// </summary>
+        /// <param name="ui">The UI.</param>
+        /// <param name="actionEventSources">The action event sources.</param>
+        private static IAction GetActionForFeedbackCommand(IUI ui, ICollection<ActionEventSource> actionEventSources)
+        {
+            var action = ui.CreateAction();
+
+            var extractedImageResource = ExtractResource(Assembly.GetExecutingAssembly(), "mrFeedback_16x16.png");
+            if (extractedImageResource != null)
+            {
+                var icon = ui.CreateImage();
+                icon.LoadFromData(extractedImageResource, ImageFormat.ImageFormat_PNG);
+                action.Icon = icon;
+            }
+
+            action.DisplayName = Language.GetItem("ModPlusAPI", "f1");
+
+            var actionEventSource = new ActionEventSource(action);
+            actionEventSource.Triggered += (s, e) =>
+            {
+                ModPlusAPI.UserInfo.UserInfoService.ShowFeedback();
+            };
+
+            actionEventSources.Add(actionEventSource);
+
+            return action;
+        }
 
         /// <summary>
         /// Gets the action for function.
@@ -199,7 +230,10 @@
                     }
                     catch (Exception exception)
                     {
-                        rengaApplication.UI.ShowMessageBox(MessageIcon.MessageIcon_Error, "ModPlus", exception.Message + Environment.NewLine + exception.StackTrace);
+                        rengaApplication.UI.ShowMessageBox(
+                            MessageIcon.MessageIcon_Error,
+                            "ModPlus",
+                            $"{exception.Message}{Environment.NewLine}{exception.StackTrace}");
                     }
                 };
                 actionEventSources.Add(actionEventSource);
@@ -210,7 +244,8 @@
             return null;
         }
 
-        private static IAction GetActionForButtonInActionPanel(IApplication rengaApplication, List<ActionEventSource> actionEventSources, LoadedFunction loadedFunction)
+        private static IAction GetActionForButtonInActionPanel(
+            IApplication rengaApplication, List<ActionEventSource> actionEventSources, LoadedFunction loadedFunction)
         {
             var f = GetImplementRengaFunctionFromLoadedFunction(loadedFunction);
             if (f != null)
