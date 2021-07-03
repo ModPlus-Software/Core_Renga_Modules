@@ -12,7 +12,6 @@
     using ModPlusAPI.Enums;
     using ModPlusAPI.LicenseServer;
     using ModPlusAPI.UserInfo;
-    using ModPlusAPI.Windows;
 
     /// <inheritdoc />
     public class ModPlus : Renga.IPlugin
@@ -55,7 +54,7 @@
                     WebLicenseServerClient.Instance.Start(SupportedProduct.Renga);
 
                 // user info
-                AuthorizationOnStartup();
+                UserInfoService.ProductStartupAuthorization();
 
                 return true;
             }
@@ -177,26 +176,6 @@
             catch (Exception exception)
             {
                 Statistic.SendException(exception);
-            }
-        }
-
-        private async void AuthorizationOnStartup()
-        {
-            try
-            {
-                await UserInfoService.GetUserInfoAsync();
-                var userInfo = UserInfoService.GetUserInfoResponseFromHash();
-                if (userInfo != null)
-                {
-                    if (!userInfo.IsLocalData && !await ModPlusAPI.Web.Connection.HasAllConnectionAsync(3))
-                    {
-                        Variables.UserInfoHash = string.Empty;
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                ExceptionBox.Show(exception);
             }
         }
     }
